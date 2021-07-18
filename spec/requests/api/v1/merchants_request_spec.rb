@@ -41,4 +41,11 @@ describe "Merchants API" do
     expect(merchant).to have_key(:name)
     expect(merchant[:name]).to be_a(String)
   end
+
+  it 'can find all items for a merchant' do
+    merchants = create_list(:merchant, 1, id: 1)
+    items = create_list(:item, 3, merchant_id: 1)
+
+    expect(merchants[0].items.count).to eq(3)
+  end
 end

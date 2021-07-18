@@ -113,4 +113,10 @@ describe "Items API" do
     expect{Item.find(item.id)}.to raise_error(ActiveRecord::RecordNotFound)
   end
 
+  it 'can get merchant info from an item' do
+    # merchant = create(:merchant, id: 1)
+    # item = create(:item, merchant_id: 1)
+    # binding.pry
+  end
+
 end

@@ -85,4 +85,21 @@ describe "Items API" do
     expect(created_item.unit_price).to eq(item_params[:unit_price])
     expect(created_item.merchant_id).to eq(item_params[:merchant_id])
   end
+
+  it "can update an existing item" do
+    create_list(:merchant, 1, id: 1)
+    id = create(:item, merchant_id: 1).id
+
+    previous_item_description = Item.last.description
+    item_params = { description: "100% acrylic blanket" }
+    headers = {"CONTENT_TYPE" => "application/json"}
+
+    patch "/api/v1/items/#{id}", headers: headers, params: JSON.generate({item: item_params})
+    item = Item.find_by(id: id)
+
+    expect(response).to be_successful
+    expect(item.description).to_not eq(previous_item_description)
+    expect(item.description).to eq("100% acrylic blanket")
+  end
+
 end

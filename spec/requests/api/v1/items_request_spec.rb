@@ -102,4 +102,15 @@ describe "Items API" do
     expect(item.description).to eq("100% acrylic blanket")
   end
 
+  it "can destroy an item" do
+    create_list(:merchant, 1, id: 1)
+    id = create(:item, merchant_id: 1).id
+    item = Item.find_by(id: id)
+
+    expect{ delete "/api/v1/items/#{item.id}" }.to change(Item, :count).by(-1)
+
+    expect(response).to be_success
+    expect{Item.find(item.id)}.to raise_error(ActiveRecord::RecordNotFound)
+  end
+
 end

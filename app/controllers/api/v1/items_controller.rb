@@ -1,7 +1,9 @@
 class Api::V1::ItemsController < ApplicationController
 
   def index
-    render json: Item.all
+    page = params[:page] || 1
+    per_page = 20
+    render json: Item.limit(per_page).offset((page.to_1 - 1) * per_page)
   end
 
   def show

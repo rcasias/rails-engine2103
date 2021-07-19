@@ -2,8 +2,6 @@ class ItemSerializer
   include JSONAPI::Serializer
   set_key_transform :underscore
 
-  # set_type :merchant  # optional
-  # set_id :id # optional
-  attributes :id, :name
-  belongs_to :merchant
+  set_type :item
+  attributes :name, :description, :unit_price, :merchant_id
 end

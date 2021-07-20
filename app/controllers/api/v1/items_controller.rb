@@ -41,6 +41,11 @@ class Api::V1::ItemsController < ApplicationController
     render json: Item.delete(params[:id]), status: :no_content
   end
 
+  def find_all
+    items = Item.search(params[:name])
+    render json: items, status: :ok
+  end
+
 private
 
   def item_params

@@ -15,14 +15,14 @@ class Api::V1::MerchantsController < ApplicationController
   end
 
   def show
-    # @merchant = Merchant.find(params[:id])
-    # @merchant_items = @merchant.items
-    # Merchant.include(:items).find(params[:id])
-    # render json: Merchant.includes(:items).find(params[:id])
     merchant = Merchant.find(params[:id])
-    # render json: Merchant.find(params[:id])
     render json: merchant
+  end
+
+  def find
     # binding.pry
+    merchant = Merchant.search(params[:name])
+    render json: merchant, status: :ok
   end
 
 end

@@ -17,12 +17,12 @@ describe "Merchants API" do
     expect(response).to be_successful
 
     merchants = JSON.parse(response.body, symbolize_names: true)
+    # binding.pry
+    expect(merchants[:data].count).to eq(3)
 
-    expect(merchants.count).to eq(3)
-
-    merchants.each do |merchant|
-      expect(merchant).to have_key(:name)
-      expect(merchant[:name]).to be_a(String)
+    merchants[:data].each do |merchant|
+      expect(merchant[:attributes]).to have_key(:name)
+      expect(merchant[:attributes][:name]).to be_a(String)
     end
   end
 
@@ -31,21 +31,37 @@ describe "Merchants API" do
 
     get "/api/v1/merchants/#{id}"
 
-    merchant = JSON.parse(response.body, symbolize_names: true)
-
+    merchant_data = JSON.parse(response.body, symbolize_names: true)
+    merchant = merchant_data[:data]
     expect(response).to be_successful
 
     expect(merchant).to have_key(:id)
-    expect(merchant[:id]).to eq(id)
+    expect(merchant[:id].to_i).to eq(id)
 
-    expect(merchant).to have_key(:name)
-    expect(merchant[:name]).to be_a(String)
+    expect(merchant[:attributes]).to have_key(:name)
+    expect(merchant[:attributes][:name]).to be_a(String)
   end
 
   it 'can find all items for a merchant' do
-    merchants = create_list(:merchant, 1, id: 1)
-    items = create_list(:item, 3, merchant_id: 1)
+    merchant_1 = create(:merchant)
+    merchant_2 = create(:merchant)
+    merchant_3 = create(:merchant)
+    items = create_list(:item, 3, merchant: merchant_1)
+    items_2 = create_list(:item, 7, merchant: merchant_2)
+    items_3 = create_list(:item, 10, merchant: merchant_3)
 
-    expect(merchants[0].items.count).to eq(3)
+    get "/api/v1/merchants/#{merchant_1.id}/items"
+    items_data = JSON.parse(response.body, symbolize_names: true)
+    items = items_data[:data]
+
+    expect(items.length).to eq(3)
+    expect(response).to be_successful
+    expect(items.first).to have_key(:id)
+    expect(items.first).to have_key(:type)
+    expect(items.first).to have_key(:attributes)
+    expect(items.first[:attributes]).to have_key(:name)
+    expect(items.first[:attributes]).to have_key(:description)
+    expect(items.first[:attributes]).to have_key(:unit_price)
+    expect(items.first[:attributes]).to have_key(:merchant_id)
   end
 end

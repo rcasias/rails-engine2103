@@ -14,8 +14,7 @@ class Api::V1::ItemsController < ApplicationController
       per_page_to_i = 20
     end
     items =  Item.limit(per_page_to_i).offset((page.to_i - 1) * per_page_to_i)
-    json_string = ItemSerializer.new(items).serializable_hash.to_json
-    render json: json_string
+    render json: items
 
   end
 
@@ -24,15 +23,22 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def create
-    render json: Item.create(item_params)
+    render json: Item.create(item_params), status: :created
   end
 
   def update
-    render json: Item.update(params[:id], item_params)
+    @item = Item.find(params[:id])
+    if @item.update(item_params)
+      render json: @item, status: :accepted
+    else
+      render json: {data:{}}, status: 400
+    end
+  rescue StandardError
+    render json: {data:{}}, status: 404
   end
 
   def destroy
-    render json: Item.delete(params[:id])
+    render json: Item.delete(params[:id]), status: :no_content
   end
 
 private

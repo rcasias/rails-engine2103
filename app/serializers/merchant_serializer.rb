@@ -1,9 +1,4 @@
-class MerchantSerializer
-  include JSONAPI::Serializer
-  set_key_transform :underscore
-
-  set_type :merchant
-  # set_id :id
+class MerchantSerializer < ActiveModel::Serializer
+  type :merchant
   attributes :name
-  # has_many :items
 end

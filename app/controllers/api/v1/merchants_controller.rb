@@ -11,8 +11,7 @@ class Api::V1::MerchantsController < ApplicationController
       per_page_to_i = 20
     end
     merchant =  Merchant.limit(per_page_to_i).offset((page.to_i - 1) * per_page_to_i)
-    json_string = MerchantSerializer.new(merchant).serializable_hash.to_json
-    render json: json_string
+    render json: merchant
   end
 
   def show
@@ -20,7 +19,9 @@ class Api::V1::MerchantsController < ApplicationController
     # @merchant_items = @merchant.items
     # Merchant.include(:items).find(params[:id])
     # render json: Merchant.includes(:items).find(params[:id])
-    render json: Merchant.find(params[:id])
+    merchant = Merchant.find(params[:id])
+    # render json: Merchant.find(params[:id])
+    render json: merchant
     # binding.pry
   end
 

@@ -9,6 +9,39 @@ describe "Merchants API" do
     expect(response).to be_successful
   end
 
+  it 'will default to page 1' do
+    list = create_list(:merchant, 21)
+
+    get "/api/v1/merchants?page=0"
+
+    item_data = JSON.parse(response.body, symbolize_names: true)
+
+    expect(item_data[:data].count).to eq(20)
+    expect(item_data[:data].include?(list[-1])).to eq(false)
+  end
+
+  it 'has 20 merchants per page' do
+    list = create_list(:merchant, 21)
+
+    get "/api/v1/merchants"
+
+    item_data = JSON.parse(response.body, symbolize_names: true)
+
+    expect(item_data[:data].count).to eq(20)
+    expect(item_data[:data].include?(list[-1])).to eq(false)
+  end
+
+  it 'has 20 merchants per page page 2' do
+    list = create_list(:merchant, 21)
+
+    get "/api/v1/merchants?page=2"
+
+    item_data = JSON.parse(response.body, symbolize_names: true)
+
+    expect(item_data[:data].count).to eq(1)
+    expect(item_data[:data].include?(list[0..19])).to eq(false)
+  end
+
   it "sends a list of merchants" do
     create_list(:merchant, 3)
 
@@ -17,7 +50,6 @@ describe "Merchants API" do
     expect(response).to be_successful
 
     merchants = JSON.parse(response.body, symbolize_names: true)
-    # binding.pry
     expect(merchants[:data].count).to eq(3)
 
     merchants[:data].each do |merchant|
@@ -63,5 +95,35 @@ describe "Merchants API" do
     expect(items.first[:attributes]).to have_key(:description)
     expect(items.first[:attributes]).to have_key(:unit_price)
     expect(items.first[:attributes]).to have_key(:merchant_id)
+  end
+
+  it 'can find a single merchant based on a seach' do
+    merchant_1 = create(:merchant, name: 'La-Z-Boy Home Furniture Galleries')
+    merchant_2 = create(:merchant, name: 'La-Z-Boy Home Furnishings and Decor')
+    merchant_3 = create(:merchant, name: 'Albertsons')
+    merchant_4 = create(:merchant, name: 'Target')
+
+    get "/api/v1/merchants/find?name=La-Z-Boy"
+
+    item_data = JSON.parse(response.body, symbolize_names: true)
+
+    expect(Merchant.all.count).to eq(4)
+    expect(item_data.count).to eq(1)
+    expect(item_data[:data][:attributes][:name]).to eq(merchant_2.name)
+  end
+
+  it 'can fail to find a single merchant based on a seach' do
+    merchant_1 = create(:merchant, name: 'La-Z-Boy Home Furniture Galleries')
+    merchant_2 = create(:merchant, name: 'La-Z-Boy Home Furnishings and Decor')
+    merchant_3 = create(:merchant, name: 'Albertsons')
+    merchant_4 = create(:merchant, name: 'Target')
+
+    get "/api/v1/merchants/find?name=icecream"
+
+    item_data = JSON.parse(response.body, symbolize_names: true)
+
+    expect(Merchant.all.count).to eq(4)
+    expect(item_data[:data].count).to eq(0)
+    expect(item_data[:data]).to eq({})
   end
 end

@@ -1,9 +1,6 @@
 class Api::V1::ItemsController < ApplicationController
 
   def index
-    # page = params[:page] || 1
-    # per_page = 20
-    # render json: Item.limit(per_page).offset((page.to_1 - 1) * per_page)
     page = params[:page] || 1
     if page.to_i <= 0
       page = 1
@@ -15,7 +12,6 @@ class Api::V1::ItemsController < ApplicationController
     end
     items =  Item.limit(per_page_to_i).offset((page.to_i - 1) * per_page_to_i)
     render json: items
-
   end
 
   def show
@@ -33,7 +29,7 @@ class Api::V1::ItemsController < ApplicationController
     else
       render json: {data:{}}, status: 400
     end
-  rescue StandardError
+  rescue
     render json: {data:{}}, status: 404
   end
 
@@ -43,7 +39,11 @@ class Api::V1::ItemsController < ApplicationController
 
   def find_all
     items = Item.search(params[:name])
-    render json: items, status: :ok
+    if !items.nil? && items.length > 0
+      render json: items, status: :ok
+    else
+      render json: {data:[]}, status: 404
+    end
   end
 
 private

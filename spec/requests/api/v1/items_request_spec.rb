@@ -10,6 +10,18 @@ describe "Items API" do
     expect(response).to be_successful
   end
 
+  it 'will default to page 1' do
+    create_list(:merchant, 1, id: 1)
+    list = create_list(:item, 21, merchant_id: 1)
+
+    get "/api/v1/items?page=0"
+
+    item_data = JSON.parse(response.body, symbolize_names: true)
+
+    expect(item_data[:data].count).to eq(20)
+    expect(item_data[:data].include?(list[-1])).to eq(false)
+  end
+
   it 'has 20 items per page' do
     create_list(:merchant, 1, id: 1)
     list = create_list(:item, 21, merchant_id: 1)

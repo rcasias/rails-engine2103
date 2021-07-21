@@ -32,4 +32,5 @@ describe "ItemsMerchant" do
     expect(response).to_not be_successful
     expect(item_data[:data]).to eq({})
   end
+
 end

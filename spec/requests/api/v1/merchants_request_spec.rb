@@ -9,6 +9,17 @@ describe "Merchants API" do
     expect(response).to be_successful
   end
 
+  it 'will default to page 1' do
+    list = create_list(:merchant, 21)
+
+    get "/api/v1/merchants?page=0"
+
+    item_data = JSON.parse(response.body, symbolize_names: true)
+
+    expect(item_data[:data].count).to eq(20)
+    expect(item_data[:data].include?(list[-1])).to eq(false)
+  end
+
   it 'has 20 merchants per page' do
     list = create_list(:merchant, 21)
 
@@ -93,7 +104,7 @@ describe "Merchants API" do
     merchant_4 = create(:merchant, name: 'Target')
 
     get "/api/v1/merchants/find?name=La-Z-Boy"
-    
+
     item_data = JSON.parse(response.body, symbolize_names: true)
 
     expect(Merchant.all.count).to eq(4)

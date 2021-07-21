@@ -39,7 +39,6 @@ describe "Merchants API" do
     expect(response).to be_successful
 
     merchants = JSON.parse(response.body, symbolize_names: true)
-    # binding.pry
     expect(merchants[:data].count).to eq(3)
 
     merchants[:data].each do |merchant|
@@ -92,9 +91,11 @@ describe "Merchants API" do
     merchant_2 = create(:merchant, name: 'La-Z-Boy Home Furnishings and Decor')
     merchant_3 = create(:merchant, name: 'Albertsons')
     merchant_4 = create(:merchant, name: 'Target')
+
     get "/api/v1/merchants/find?name=La-Z-Boy"
+    
     item_data = JSON.parse(response.body, symbolize_names: true)
-    # binding.pry
+
     expect(Merchant.all.count).to eq(4)
     expect(item_data.count).to eq(1)
     expect(item_data[:data][:attributes][:name]).to eq(merchant_2.name)
@@ -105,9 +106,10 @@ describe "Merchants API" do
     merchant_2 = create(:merchant, name: 'La-Z-Boy Home Furnishings and Decor')
     merchant_3 = create(:merchant, name: 'Albertsons')
     merchant_4 = create(:merchant, name: 'Target')
+
     get "/api/v1/merchants/find?name=icecream"
+
     item_data = JSON.parse(response.body, symbolize_names: true)
-    # binding.pry
 
     expect(Merchant.all.count).to eq(4)
     expect(item_data[:data].count).to eq(0)

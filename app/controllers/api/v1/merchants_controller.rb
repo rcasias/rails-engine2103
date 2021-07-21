@@ -20,9 +20,12 @@ class Api::V1::MerchantsController < ApplicationController
   end
 
   def find
-    # binding.pry
     merchant = Merchant.search(params[:name])
-    render json: merchant, status: :ok
+    if !merchant.nil?
+      render json: merchant, status: :ok
+    else
+      render json: {data:{}}, status: 404
+    end
   end
 
 end

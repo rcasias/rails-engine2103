@@ -7,7 +7,7 @@ class Api::V1::ItemsMerchantController < ApplicationController
     else
       render json: {data:{}}, status: 404
     end
-  rescue StandardError
+  rescue 
     render json: {data:{}}, status: 404
   end
 

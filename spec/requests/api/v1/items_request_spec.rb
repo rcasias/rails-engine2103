@@ -10,6 +10,30 @@ describe "Items API" do
     expect(response).to be_successful
   end
 
+  it 'has 20 items per page' do
+    create_list(:merchant, 1, id: 1)
+    list = create_list(:item, 21, merchant_id: 1)
+
+    get "/api/v1/items"
+
+    item_data = JSON.parse(response.body, symbolize_names: true)
+
+    expect(item_data[:data].count).to eq(20)
+    expect(item_data[:data].include?(list[-1])).to eq(false)
+  end
+
+  it 'has 20 items per page page 2' do
+    create_list(:merchant, 1, id: 1)
+    list = create_list(:item, 21, merchant_id: 1)
+
+    get "/api/v1/items?page=2"
+
+    item_data = JSON.parse(response.body, symbolize_names: true)
+
+    expect(item_data[:data].count).to eq(1)
+    expect(item_data[:data].include?(list[0..19])).to eq(false)
+  end
+
   it "sends a list of items" do
     merchant_1 = create(:merchant)
     merchant_2 = create(:merchant)

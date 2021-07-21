@@ -127,21 +127,61 @@ describe "Items API" do
     expect(item.description).to eq("100% acrylic blanket")
   end
 
+  it "can fail to update an existing item" do
+    create_list(:merchant, 1, id: 1)
+    id = create(:item, merchant_id: 1).id
+
+    previous_item_description = Item.last.description
+    item_params = {  }
+    headers = {"CONTENT_TYPE" => "application/json"}
+
+    patch "/api/v1/items/#{id}", headers: headers, params: JSON.generate({item: item_params})
+    item = Item.find_by(id: id)
+
+    expect(response).to_not be_successful
+  end
+
   it "can destroy an item" do
     create_list(:merchant, 1, id: 1)
     id = create(:item, merchant_id: 1).id
     item = Item.find_by(id: id)
 
     expect{ delete "/api/v1/items/#{item.id}" }.to change(Item, :count).by(-1)
-
     expect(response).to be_success
     expect{Item.find(item.id)}.to raise_error(ActiveRecord::RecordNotFound)
   end
 
-  it 'can get merchant info from an item' do
-    # merchant = create(:merchant, id: 1)
-    # item = create(:item, merchant_id: 1)
-    # binding.pry
+  it 'can search for multiple items' do
+    merchant_1 = create(:merchant)
+    merchant_2 = create(:merchant)
+    create_list(:item, 3, merchant: merchant_1)
+    create_list(:item, 3, merchant: merchant_2)
+    item = create(:item, merchant: merchant_1, name: "Blue Cup")
+    item_2 = create(:item, merchant: merchant_1, name: "Red Cup")
+    item_3 = create(:item, merchant: merchant_1, name: "Green Cup")
+    get "/api/v1/items/find_all?name=cup"
+    item_data = JSON.parse(response.body, symbolize_names: true)
+
+    expect(Item.all.count).to eq(9)
+    expect(item_data[:data].count).to eq(3)
+    expect(item_data[:data].first[:attributes][:name]).to eq(item.name)
+    expect(item_data[:data].last[:attributes][:name]).to eq(item_3.name)
+  end
+
+  it 'can search for multiple items and fail to find results' do
+    merchant_1 = create(:merchant)
+    merchant_2 = create(:merchant)
+    create_list(:item, 3, merchant: merchant_1)
+    create_list(:item, 3, merchant: merchant_2)
+    item = create(:item, merchant: merchant_1, name: "Blue Cup")
+    item_2 = create(:item, merchant: merchant_1, name: "Red Cup")
+    item_3 = create(:item, merchant: merchant_1, name: "Green Cup")
+    get "/api/v1/items/find_all?name=elephant"
+    item_data = JSON.parse(response.body, symbolize_names: true)
+
+    expect(Item.all.count).to eq(9)
+    expect(item_data[:data].count).to eq(0)
+    expect(item_data[:data]).to eq([])
   end
 
 end

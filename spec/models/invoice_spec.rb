@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-RSpec.describe Transaction do
+RSpec.describe Invoice do
   describe "relationships" do
-    it {should belong_to :invoice}
-    it {should have_many :customers}
-    it {should have_many :merchants}
+    it {should have_many :transactions}
+    it {should belong_to :customer}
+    it {should belong_to :merchant}
   end
 end

@@ -1,9 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe Item do
-  # describe "relationships" do
-  #   it {should belong_to :merchant}
-  # end
+  describe "relationships" do
+    it {should belong_to :merchant}
+    it {should have_many :invoice_items}
+  end
 
   it 'will return merchants based on search criteria' do
     merchant_1 = create(:merchant)

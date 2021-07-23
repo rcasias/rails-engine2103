@@ -38,7 +38,7 @@ class Api::V1::MerchantsController < ApplicationController
                       "please enter a quantity"
                     ]
                     }, status: 400 and return
-    end                
+    end
     @records =  Merchant.top_revenue(n)
     render :json => @records, each_serializer: RevenueSerializer, status: 200
   end
@@ -65,6 +65,11 @@ class Api::V1::MerchantsController < ApplicationController
     else
       render json: {data:{}}, status: 400
     end
+  end
+
+  def revenue
+    merchant = Merchant.find(params[:id])
+    render json: merchant.total_revenue[0], serializer: TotalRevenueSerializer, status: 200
   end
 
 end

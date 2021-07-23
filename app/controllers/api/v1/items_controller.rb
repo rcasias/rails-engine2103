@@ -46,6 +46,20 @@ class Api::V1::ItemsController < ApplicationController
     end
   end
 
+  def total_revenue
+    n = params[:quantity]
+
+    if n.nil?
+      n = 10
+    elsif n.to_i <= 0
+      render json: {data:{}}, status: 400 and return
+    elsif n.to_i >= 100
+      n = Item.all.length
+    end
+
+    render json: Item.top_item_revenue(n), each_serializer: TopItemSerializer, status: 200
+  end
+
 private
 
   def item_params

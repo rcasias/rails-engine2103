@@ -22,5 +22,8 @@ Rails.application.routes.draw do
   end
 
   get '/api/v1/revenue/merchants', to: 'api/v1/merchants#quantity'
+  get '/api/v1/revenue/merchants/:id', to: 'api/v1/merchants#revenue'
+
+  get '/api/v1/revenue/items', to: 'api/v1/items#total_revenue'
 
 end

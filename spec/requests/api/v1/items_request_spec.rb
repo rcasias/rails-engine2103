@@ -205,9 +205,9 @@ describe "Items API" do
     customer_2 = Customer.create(first_name: "Daxton", last_name: "Casias")
     customer_3 = Customer.create(first_name: "Michael", last_name: "Ochoa")
 
-    item = create(:item, merchant: merchant_1)
-    item_2 = create(:item, merchant: merchant_2)
-    item_3 = create(:item, merchant: merchant_3)
+    item = create(:item, merchant: merchant_1, unit_price: 1)
+    item_2 = create(:item, merchant: merchant_2, unit_price: 1)
+    item_3 = create(:item, merchant: merchant_3, unit_price: 1)
 
     invoice_1 = Invoice.create(customer: customer_1, merchant: merchant_1, status: 'shipped')
     invoice_2 = Invoice.create(customer: customer_2, merchant: merchant_2, status: 'shipped')
@@ -229,9 +229,10 @@ describe "Items API" do
     transactions_4 = Transaction.create(invoice_id: invoice_4.id, credit_card_number: '123456', credit_card_expiration_date: '1220', result: 'success')
     transactions_5 = Transaction.create(invoice_id: invoice_5.id, credit_card_number: '123456', credit_card_expiration_date: '1220', result: 'fail')
 
-    expect(Item.top_item_revenue(2).first).to eq(item)
-    expect(Item.top_item_revenue(2).last).to eq(item_2)
-    expect(Item.top_item_revenue(2).include?(item_3)).to eq(false)
+    get "/api/v1/revenue/items?quantity=3"
+    item_data = JSON.parse(response.body, symbolize_names: true)
+
+    expect(item_data[:data].first[:attributes][:name]).to eq(item.name)
   end
 
 end

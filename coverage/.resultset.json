@@ -214,8 +214,8 @@
         "lines": [
           1,
           1,
-          199,
-          223,
+          202,
+          226,
           220,
           1,
           null,
@@ -226,7 +226,7 @@
         "lines": [
           1,
           1,
-          134,
+          137,
           null,
           null
         ]
@@ -323,6 +323,44 @@
           1,
           null,
           null,
+          1,
+          1,
+          1,
+          1,
+          null,
+          1,
+          1,
+          1,
+          null,
+          1,
+          1,
+          1,
+          null,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          null,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          null,
+          1,
+          1,
+          1,
+          1,
+          1,
+          null,
+          1,
+          1,
+          1,
+          null,
+          null,
           null
         ]
       },
@@ -338,8 +376,7 @@
           null,
           null,
           1,
-          3,
-          null,
+          4,
           null,
           null,
           null,
@@ -909,6 +946,7 @@
           null,
           1,
           1,
+          null,
           1,
           null,
           null,
@@ -1425,17 +1463,17 @@
           null,
           null,
           1,
+          1,
+          null,
+          1,
+          0,
+          1,
+          0,
+          1,
           0,
           null,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
           null,
-          null,
-          0,
+          1,
           null,
           null,
           1,
@@ -1451,6 +1489,15 @@
         "lines": [
           1,
           1,
+          1,
+          null
+        ]
+      },
+      "/Users/rcasias/mod3/projects/rails-engine/app/serializers/top_item_serializer.rb": {
+        "lines": [
+          1,
+          1,
+          null,
           1,
           null
         ]
@@ -1564,6 +1611,6 @@
         ]
       }
     },
-    "timestamp": 1627017243
+    "timestamp": 1627017890
   }
 }

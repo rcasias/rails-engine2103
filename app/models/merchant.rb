@@ -26,7 +26,7 @@ class Merchant < ApplicationRecord
 
   def self.top_revenue(num)
     all
-    .select("sum (invoice_items.quantity * invoice_items.unit_price) as revenue, merchants.*")
+    .select("SUM (invoice_items.quantity * invoice_items.unit_price) as revenue, merchants.*")
     .joins("INNER JOIN items ON merchants.id = items.merchant_id")
     .joins("INNER JOIN invoice_items ON items.id = invoice_items.item_id")
     .joins("INNER JOIN invoices ON invoices.id = invoice_items.invoice_id")
@@ -35,5 +35,25 @@ class Merchant < ApplicationRecord
     .order("revenue desc")
     .limit(num)
   end
+
+  def total_revenue
+    items.joins(invoice_items: :item).joins(merchant: :invoices)
+    .joins("INNER JOIN transactions ON transactions.invoice_id = invoices.id")
+    .where("transactions.result = 'success'")
+    .select("sum(invoice_items.quantity * invoice_items.unit_price) as revenue, merchants.id")
+    .group("merchants.id")
+  end
+
+  # def self.revenue(first_date, last_date)
+  #   all
+  #   .select("SUM (invoice_items.quantity * invoice_items.unit_price) as revenue")
+  #   .joins("INNER JOIN items ON merchants.id = items.merchant_id")
+  #   .joins("INNER JOIN invoice_items ON items.id = invoice_items.item_id")
+  #   .joins("INNER JOIN invoices ON invoices.id = invoice_items.invoice_id")
+  #   .joins("INNER JOIN transactions ON transactions.invoice_id = invoices.id and transactions.result = 'success'")
+  #   .where("transactions.created_at IN (?)", (first_date)..(last_date))
+  #
+  #
+  # end
 
 end

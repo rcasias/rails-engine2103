@@ -28,6 +28,21 @@ class Api::V1::MerchantsController < ApplicationController
     end
   end
 
+  def quantity
+    n = params[:quantity]
+
+    if n.nil?
+      render json: {
+                    "message": "your query could not be completed",
+                    "error": [
+                      "please enter a quantity"
+                    ]
+                    }, status: 400 and return
+    end                
+    @records =  Merchant.top_revenue(n)
+    render :json => @records, each_serializer: RevenueSerializer, status: 200
+  end
+
   def most_items
     n = params[:quantity]
 

@@ -24,4 +24,16 @@ class Merchant < ApplicationRecord
     .limit(num)
   end
 
+  def self.top_revenue(num)
+    all
+    .select("sum (invoice_items.quantity * invoice_items.unit_price) as revenue, merchants.*")
+    .joins("INNER JOIN items ON merchants.id = items.merchant_id")
+    .joins("INNER JOIN invoice_items ON items.id = invoice_items.item_id")
+    .joins("INNER JOIN invoices ON invoices.id = invoice_items.invoice_id")
+    .joins("INNER JOIN transactions ON transactions.invoice_id = invoices.id and transactions.result = 'success'")
+    .group("merchants.id")
+    .order("revenue desc")
+    .limit(num)
+  end
+
 end
